@@ -3,24 +3,27 @@ import mysql from "mysql2";
 import cors from "cors";
 import bcrypt from "bcryptjs";
 import dotenv from "dotenv";
+import Sequelize from "sequelize";
+
 
 dotenv.config();
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-const db = mysql.createConnection({
-  host: process.env.MYSQLHOST,
-  user: process.env.MYSQLUSER,
-  password: process.env.MYSQLPASSWORD,
-  database: process.env.MYSQLDATABASE,
-  port: process.env.MYSQLPORT
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
+  dialect: "mysql",
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false
+    }
+  }
 });
 
-db.connect((err) => {
-  if (err) throw err;
-  console.log("Connected to MySQL");
-});
+sequelize.authenticate()
+  .then(() => console.log("Connected to Railway MySQL!"))
+  .catch(err => console.error("Database connection failed:", err));
 
 const checkBlockedUser = (req, res, next) => {
   const { userId } = req.body;
