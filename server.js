@@ -12,7 +12,23 @@ app.use(express.json());
 
 const db = mysql.createConnection(process.env.DATABASE_URL);
 
-
+db.query(
+  `CREATE TABLE IF NOT EXISTS users (
+     id INT AUTO_INCREMENT PRIMARY KEY,
+     name VARCHAR(255) NOT NULL,
+     email VARCHAR(255) NOT NULL UNIQUE,
+     password VARCHAR(255) NOT NULL,
+     last_seen TIMESTAMP NOT NULL,
+     isBlocked BOOLEAN DEFAULT FALSE
+   );`,
+  (err) => {
+    if (err) {
+      console.error("Error creating table:", err);
+    } else {
+      console.log("Table 'users' created or already exists.");
+    }
+  }
+);
 
 
 const checkBlockedUser = async (req, res, next) => {
