@@ -11,6 +11,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+console.log("DATABASE_URL:", process.env.DATABASE_URL);
+
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialect: "mysql",
   dialectOptions: {
@@ -143,5 +145,5 @@ app.put("/unblock-users", checkBlockedUser, async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3306;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
