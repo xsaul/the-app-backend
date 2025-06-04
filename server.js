@@ -9,12 +9,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "xTortitadepollo47+x",
-  database: "my_database",
-});
+const db = mysql.createConnection(process.env.DB_URL);
 
 db.connect((err) => {
   if (err) throw err;
