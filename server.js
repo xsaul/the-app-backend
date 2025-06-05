@@ -55,15 +55,22 @@ app.post("/signup", async (req, res) => {
   if (!name || !email || !password) {
     return res.status(400).json({ message: "Email and Password required" });
   }
+  
   const hashedPassword = await bcrypt.hash(password, 10);
-  db.query("INSERT INTO users (name, email, password, last_seen) VALUES (?, ?, ?, CURRENT_TIMESTAMP)", 
+
+  db.query(
+    "INSERT INTO users (name, email, password, last_seen) VALUES (?, ?, ?, CURRENT_TIMESTAMP)",
     [name, email, hashedPassword],
-    (err) => {
+    (err, result) => {
       if (err) return res.status(500).json({ error: err.message });
-      res.json({ message: "User registered successfully!" });
+      res.json({
+        message: "User registered successfully!",
+        userId: result.insertId,
+      });
     }
   );
 });
+
 
 
 app.get("/users", (req, res) => {
