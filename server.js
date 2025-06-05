@@ -65,22 +65,27 @@ app.post("/signup", async (req, res) => {
   );
 });
 
-app.get("/users", async (req, res) => {
+app.get("/users", (req, res) => {
   db.query("SELECT id, name, email, last_seen, isBlocked FROM users", (err, results) => {
     if (err) {
-      return res.status(500).json({ error: "Database error" });
+      console.error("SQL query error:", err);
+      return res.status(500).json({ error: "Database error: " + err.message });
     }
-    const formattedUsers = results.map(user => {
-      const formattedTimestamp = user.last_seen ? new Date(user.last_seen).toISOString() : null;
-      return {
-        ...user,
-        last_seen: formattedTimestamp,
-        isBlocked: user.isBlocked,
-      };
-    });
-    res.json(formattedUsers);
+    try {
+      const formattedUsers = results.map(user => {
+        const formattedTimestamp = user.last_seen ? new Date(user.last_seen).toISOString() : null;
+        return {
+          ...user,
+          last_seen: formattedTimestamp,
+          isBlocked: user.isBlocked
+        };
+      });
+      return res.json(formattedUsers);  
+    } catch (error) {
+      console.error("Error processing the results:", error);
+      return res.status(500).json({ error: "Error processing results: " + error.message });
+    }
   });
-res.json(users);
 });
 
 app.post("/login", async (req, res) => {
