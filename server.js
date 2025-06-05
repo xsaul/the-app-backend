@@ -65,6 +65,7 @@ app.post("/signup", async (req, res) => {
   );
 });
 
+
 app.get("/users", (req, res) => {
   db.query("SELECT id, name, email, last_seen, isBlocked FROM users", (err, results) => {
     if (err) {
