@@ -56,7 +56,7 @@ app.post("/signup", async (req, res) => {
     return res.status(400).json({ message: "Email and Password required" });
   }
   const hashedPassword = await bcrypt.hash(password, 10);
-  db.query("INSERT INTO users (name, email, password) VALUES (?, ?, ?)", 
+  db.query("INSERT INTO users (name, email, password, last_seen) VALUES (?, ?, ?, CURRENT_TIMESTAMP)", 
     [name, email, hashedPassword],
     (err) => {
       if (err) return res.status(500).json({ error: err.message });
