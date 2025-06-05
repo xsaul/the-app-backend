@@ -88,7 +88,7 @@ app.get("/users", (req, res) => {
   });
 });
 
-app.post("/login", checkBlockedUser,async (req, res) => {
+app.post("/login", async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
     return res.status(400).json({ message: "Email and Password required" });
@@ -104,7 +104,6 @@ app.post("/login", checkBlockedUser,async (req, res) => {
       return res.status(401).json({ message: "Invalid password" });
     }
      if (user.isBlocked) {
-      alert("Your account is blocked.");
       return res.status(403).json({ message: "Your account is blocked." });
     }
     db.query("UPDATE users SET last_seen = CURRENT_TIMESTAMP WHERE id = ?", [user.id]);
